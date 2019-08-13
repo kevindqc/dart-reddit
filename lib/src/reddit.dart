@@ -16,7 +16,21 @@ class Reddit {
   Subreddit _front;
 
   Reddit(Client this._client) : _oauthEnabled = false {
+    if (this._client is oauth2.Client) {
+      _oauthEnabled = true;
+    }
+
     _front = new Subreddit._(this, null);
+  }
+
+  /** Returns the oauth2 credentials as json. */
+  String oauthCredentials() {
+    if (_oauthEnabled && this._client is oauth2.Client) {
+      var oauth2Client = this._client as oauth2.Client;
+      return oauth2Client.credentials.toJson();
+    }
+
+    throw new StateError("Can't get OAuth2 credentials.");
   }
 
   Subreddit get frontPage => _front;
